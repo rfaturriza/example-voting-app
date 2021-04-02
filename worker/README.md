@@ -1,2 +1,1 @@
-HI from Github
-I am Rizky Faturriza
+[![Build Status](http://192.168.2.159:8080/buildStatus/icon?job=instavote%2Fworker-build)](http://192.168.2.159:8080/job/instavote/job/worker-build/)
