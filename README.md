@@ -1,5 +1,6 @@
 Example Voting App
 =========
+This is a sample voting app.
 
 THIS IS EXAMPLE.
 
