@@ -15,7 +15,7 @@ docker-compose run --rm integration /test/test.sh
 if [ $? -eq 0 ]
 then
   echo "---------------------------------------"
-  echo "INTEGRATION TESTS PASSED....."
+  echo "INTEGRATION TESTS PASSED Berhasil....."
   echo "---------------------------------------"
   docker-compose down
   cd ..
