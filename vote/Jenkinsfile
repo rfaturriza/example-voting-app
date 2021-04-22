@@ -32,7 +32,7 @@ pipeline {
             }  
             steps{              
                 echo 'Running Unit Tets on vote app'  
-                dir('worker'){ 
+                dir('vote'){ 
                     sh 'pip install -r requirements.txt'                 
                     sh 'nosetests -v'               
                 }          
