@@ -1,37 +1,64 @@
-pipeline {  
-    agent{
-        docker{
-            image 'python:2.7-slim'
-            args '--user root'
-        }
-    }
+pipeline {     
+
+    agent none
+    
     stages{      
-        stage("build"){  
+        stage("build"){ 
+            agent{
+                docker{
+                    image 'schoolofdevops/voteapp-python:v0.1.0'
+                    args '--user root'
+                }
+            }
             when{
                 changeset "**/vote/**"
             }        
             steps{              
-                echo 'Compiling worker app'              
+                echo 'Compiling vote app'              
                 dir('vote'){                
                     sh 'pip install -r requirements.txt'              
                 }          
             }      
         }      
         stage("test"){  
+            agent{
+                docker{
+                    image 'schoolofdevops/voteapp-python:v0.1.0'
+                    args '--user root'
+                }
+            }
             when{
                 changeset "**/vote/**"
             }  
             steps{              
-                echo 'Running Unit Tets on worker app'  
-                dir('vote'){                
-                    sh 'nosetests -v'              
+                echo 'Running Unit Tets on vote app'  
+                dir('worker'){ 
+                    sh 'pip install -r requirements.txt'                 
+                    sh 'nosetests -v'               
                 }          
             }      
-        }     
+        }   
+        stage("docker-package"){    
+            agent any  
+            when{
+                changeset "**/vote/**"
+                branch 'master'
+            }      
+            steps{              
+                echo 'Packaging vote app with docker'       
+                script{
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerlogin'){
+                        def voteImage = docker.build("rfaturriza/vote:v${env.BUILD_ID}", "./vote")
+                        voteImage.push()
+                        voteImage.push("${env.BRANCH_NAME}")
+                    }
+                }  
+            }      
+        } 
     }  
     post{    
         always{  
-            echo 'Building multibranch pipeline for worker is completed..'
+            echo 'Building multibranch pipeline for vote is completed..'
         }
         failure{
             slackSend (channel: "instavote-cd", message: "Build Failed - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)")
