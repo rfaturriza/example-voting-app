@@ -1,4 +1,4 @@
-# Using official python runtime base image
+# Using official python runtime base image from schoolofdevops
 FROM schoolofdevops/voteapp-python:v0.1.0
 
 # Set the application directory
